@@ -1,0 +1,19 @@
+{
+  "name": "express-mesto-gha",
+  "version": "1.0.0",
+  "description": "backend for 'mesto' project",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/juju-kole4kina/express-mesto-gha.git"
+  },
+  "author": "Juliya Koltsova",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/juju-kole4kina/express-mesto-gha/issues"
+  },
+  "homepage": "https://github.com/juju-kole4kina/express-mesto-gha#readme"
+}
