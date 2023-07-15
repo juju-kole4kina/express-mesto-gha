@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const cards = require('../controllers/cards.js');
+const cards = require('../controllers/cards');
 
 router.get('/cards', cards.getCards);
 
