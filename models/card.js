@@ -1,6 +1,4 @@
 const mongoose = require('mongoose');
-// const user = require('./user.js');
-// const { Schema } = mongoose;
 
 const cardSchema = new mongoose.Schema({
   name: {
