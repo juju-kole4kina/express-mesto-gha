@@ -22,6 +22,10 @@ app.use((req, res, next) => {
 app.use(routesUser);
 app.use(routesCard);
 
+app.use((req, res) => {
+  res.status(404).send({ message: 'Данного адреса не существует' });
+});
+
 mongoose.connect('mongodb://localhost:27017/mestodb', {});
 
 app.listen(PORT, () => {
