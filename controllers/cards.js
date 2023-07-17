@@ -26,7 +26,7 @@ const createCard = (req, res) => {
 };
 
 const deleteCard = (req, res) => {
-  const cardId = req.params;
+  const { cardId } = req.params;
   Card.findByIdAndRemove(cardId)
     .then((card) => {
       if (!card) {
@@ -45,7 +45,7 @@ const deleteCard = (req, res) => {
 };
 
 const putLike = (req, res) => {
-  const cardId = req.params;
+  const { cardId } = req.params;
   Card.findByIdAndUpdate(
     cardId,
     { $addToSet: { likes: req.user._id } },
@@ -66,7 +66,7 @@ const putLike = (req, res) => {
 };
 
 const deleteLike = (req, res) => {
-  const cardId = req.params;
+  const { cardId } = req.params;
   Card.findByIdAndUpdate(
     cardId,
     { $pull: { likes: req.user._id } },
