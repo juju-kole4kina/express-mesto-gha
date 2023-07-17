@@ -45,17 +45,17 @@ const createUser = (req, res) => {
 
 const updateUser = (req, res) => {
   const { name, about } = req.body;
-  User.findByIdAndUpdate(req.user._id, { name, about })
+  User.findByIdAndUpdate(req.user._id, { name, about }, { new: true, runValidators: true })
     .then((user) => {
-      if (!user) {
-        res.status(404).send('Пользователь с указанным _id не найден');
-        return;
-      }
-      res.send({ user });
+      res.send(user);
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
         res.status(400).send({ message: 'Переданы некорректные данные при создании пользователя' });
+        return;
+      }
+      if (err.name === 'CastError') {
+        res.status(404).send('Пользователь с указанным _id не найден');
         return;
       }
       res.status(500).send({ message: `Произошла ошибка: ${err.message}` });
@@ -64,13 +64,13 @@ const updateUser = (req, res) => {
 
 const updateAvatar = (req, res) => {
   const { avatar } = req.body;
-  User.findByIdAndUpdate(req.user._id, { avatar })
+  User.findByIdAndUpdate(req.user._id, { avatar }, { new: true })
     .then((user) => {
       if (!user) {
         res.status(404).send('Передан несуществующий _id пользователя');
         return;
       }
-      res.send({ user });
+      res.send(user);
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
