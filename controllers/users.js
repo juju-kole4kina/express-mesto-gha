@@ -17,14 +17,12 @@ const getUserId = (req, res) => {
   User.findById(userId)
     .then((user) => {
       if (!user) {
-        res.status(404).send('Пользователь с указанным _id не найден');
+        res.status(404).send({ message: 'Пользователь с указанным _id не найден' });
         return;
       }
       res.send(user);
     })
     .catch((err) => {
-      // if (err.kind === 'ObjectID') {
-
       if (err.name === 'CastError') {
         res.status(400).send({ message: 'Переданы некорректные данные при получении пользователя' });
         return;
@@ -53,11 +51,11 @@ const updateUser = (req, res) => {
         res.status(404).send('Пользователь с указанным _id не найден');
         return;
       }
-      res.send(user);
+      res.send({ user });
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        res.status(400).send({ message: 'Переданы некорректные данные для данных пользователя' });
+        res.status(400).send({ message: 'Переданы некорректные данные при создании пользователя' });
         return;
       }
       res.status(500).send({ message: `Произошла ошибка: ${err.message}` });
@@ -72,7 +70,7 @@ const updateAvatar = (req, res) => {
         res.status(404).send('Передан несуществующий _id пользователя');
         return;
       }
-      res.send(user);
+      res.send({ user });
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {

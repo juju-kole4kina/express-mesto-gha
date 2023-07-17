@@ -28,10 +28,16 @@ const createCard = (req, res) => {
 const deleteCard = (req, res) => {
   const { cardId } = req.params;
   Card.findByIdAndRemove(cardId)
-    .then((card) => res.status(200).send(card))
+    .then((card) => {
+      if (!card) {
+        res.status(404).send('Пользователь с указанным _id не найден');
+        return;
+      }
+      res.send(card);
+    })
     .catch((err) => {
       if (err.name === 'CastError') {
-        res.status(404).send('Карточка с указанным _id не найдена');
+        res.status(400).send({ message: 'Переданы некорректные данные при получении карточки' });
         return;
       }
       res.status(500).send({ message: `Произошла ошибка: ${err.message}` });
@@ -45,12 +51,14 @@ const putLike = (req, res) => {
     { $addToSet: { likes: req.user._id } },
     { new: true },
   )
-    .then((card) => res.send({ data: card }))
-    .catch((err) => {
-      if (err.name === 'CastError') {
-        res.status(404).send('Передан несуществующий _id карточки');
+    .then((card) => {
+      if (!card) {
+        res.status(404).send('Пользователь с указанным _id не найден');
         return;
       }
+      res.send({ data: card });
+    })
+    .catch((err) => {
       if (err.name === 'ValidationError') {
         res.status(400).send({ message: 'Переданы некорректные данные для постановки лайка' });
         return;
@@ -65,12 +73,14 @@ const deleteLike = (req, res) => {
     { $pull: { likes: req.user._id } },
     { new: true },
   )
-    .then((card) => res.send(card))
-    .catch((err) => {
-      if (err.kind === 'ObjectID') {
+    .then((card) => {
+      if (!card) {
         res.status(404).send('Передан несуществующий _id карточки');
         return;
       }
+      res.send(card);
+    })
+    .catch((err) => {
       if (err.name === 'ValidationError') {
         res.status(400).send({ message: 'Переданы некорректные данные для снятия лайка' });
         return;
