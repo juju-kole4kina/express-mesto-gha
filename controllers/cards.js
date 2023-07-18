@@ -20,7 +20,7 @@ const createCard = (req, res) => {
   Card.create({ name, link, owner: req.user._id })
     .then((card) => res.status(CREATE_STATUS_CODE).send(card))
     .catch((err) => {
-      if (err.name === 'CastError') {
+      if (err.name === 'ValidationError') {
         res.status(BAD_REQUEST_STATUS_CODE).send({ message: 'Переданы некорректные данные при создании карточки' });
         return;
       }
