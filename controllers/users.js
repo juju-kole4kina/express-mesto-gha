@@ -55,7 +55,7 @@ const updateUser = (req, res) => {
         res.status(NOT_FOUND_STATUS_CODE).send('Пользователь с указанным _id не найден');
         return;
       }
-      res.staus(OK_STATUS_CODE).send(user);
+      res.send({ user });
     })
     .catch((err) => {
       if (err.name === 'ValidationError') {
