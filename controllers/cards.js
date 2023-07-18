@@ -1,27 +1,30 @@
 const Card = require('../models/card');
+const {
+  OK_STATUS_CODE,
+  CREATE_STATUS_CODE,
+  BAD_REQUEST_STATUS_CODE,
+  NOT_FOUND_STATUS_CODE,
+  INTERNAL_SERVER_ERROR_STATUS_CODE,
+} = require('../utils/errors');
 
 const getCards = (req, res) => {
   Card.find({})
-    .then((cards) => res.send(cards))
-    .catch((err) => {
-      if (err.name === 'ValidationError') {
-        res.status(400).send({ message: 'Переданы некорректные данные при создании карточки' });
-        return;
-      }
-      res.status(500).send({ message: `Произошла ошибка: ${err.message}` });
+    .then((cards) => res.status(OK_STATUS_CODE).send(cards))
+    .catch(() => {
+      res.status(INTERNAL_SERVER_ERROR_STATUS_CODE).send({ message: 'Произошла ошибка на сторроне сервера' });
     });
 };
 
 const createCard = (req, res) => {
   const { name, link } = req.body;
   Card.create({ name, link, owner: req.user._id })
-    .then((card) => res.status(201).send(card))
+    .then((card) => res.status(CREATE_STATUS_CODE).send(card))
     .catch((err) => {
-      if (err.name === 'ValidationError') {
-        res.status(400).send({ message: 'Переданы некорректные данные при создании карточки' });
+      if (err.name === 'CastError') {
+        res.status(BAD_REQUEST_STATUS_CODE).send({ message: 'Переданы некорректные данные при создании карточки' });
         return;
       }
-      res.status(500).send({ message: `Произошла ошибка: ${err.message}` });
+      res.status(INTERNAL_SERVER_ERROR_STATUS_CODE).send({ message: 'Произошла ошибка на сторроне сервера' });
     });
 };
 
@@ -30,17 +33,17 @@ const deleteCard = (req, res) => {
   Card.findByIdAndRemove(cardId)
     .then((card) => {
       if (!card) {
-        res.status(404).send({ message: 'Карточка с указанным _id не найдена' });
+        res.status(NOT_FOUND_STATUS_CODE).send({ message: 'Карточка с указанным _id не найдена' });
         return;
       }
-      res.send(card);
+      res.status(OK_STATUS_CODE).send(card);
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        res.status(400).send({ message: 'Переданы некорректные данные при получении карточки' });
+        res.status(BAD_REQUEST_STATUS_CODE).send({ message: 'Переданы некорректные данные при получении карточки' });
         return;
       }
-      res.status(500).send({ message: `Произошла ошибка: ${err.message}` });
+      res.status(INTERNAL_SERVER_ERROR_STATUS_CODE).send({ message: 'Произошла ошибка на сторроне сервера' });
     });
 };
 
@@ -53,15 +56,16 @@ const putLike = (req, res) => {
   )
     .then((card) => {
       if (!card) {
-        res.status(404).send({ message: 'Передан несуществующий _id карточки' });
+        res.status(NOT_FOUND_STATUS_CODE).send({ message: 'Передан несуществующий _id карточки' });
         return;
       }
-      res.send(card);
+      res.status(OK_STATUS_CODE).send(card);
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        res.status(400).send({ message: 'Переданы некорректные данные для снятия лайка' });
+        res.status(BAD_REQUEST_STATUS_CODE).send({ message: 'Переданы некорректные данные для снятия лайка' });
       }
+      res.status(INTERNAL_SERVER_ERROR_STATUS_CODE).send({ message: 'Произошла ошибка на сторроне сервера' });
     });
 };
 
@@ -74,15 +78,16 @@ const deleteLike = (req, res) => {
   )
     .then((card) => {
       if (!card) {
-        res.status(404).send({ message: 'Передан несуществующий _id карточки' });
+        res.status(NOT_FOUND_STATUS_CODE).send({ message: 'Передан несуществующий _id карточки' });
         return;
       }
-      res.send(card);
+      res.status(OK_STATUS_CODE).send(card);
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        res.status(400).send({ message: 'Переданы некорректные данные для снятия лайка' });
+        res.status(BAD_REQUEST_STATUS_CODE).send({ message: 'Переданы некорректные данные для снятия лайка' });
       }
+      res.status(INTERNAL_SERVER_ERROR_STATUS_CODE).send({ message: 'Произошла ошибка на сторроне сервера' });
     });
 };
 
