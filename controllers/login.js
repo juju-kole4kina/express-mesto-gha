@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
-const { BAD_REQUEST_STATUS_CODE } = require('../utils/errors');
+const { UNAUTHORIZATION_STATUS_CODE } = require('../utils/errors');
 
 const { NODE_ENV, JWT_SECRET } = process.env;
 
@@ -18,7 +18,7 @@ const login = (req, res) => {
       }).send({ token });
     })
     .catch(() => {
-      res.status(BAD_REQUEST_STATUS_CODE).send({ message: 'Переданны некорректные данные' });
+      res.status(UNAUTHORIZATION_STATUS_CODE).send({ message: 'Переданны некорректные данные' });
     });
 };
 
