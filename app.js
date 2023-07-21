@@ -29,12 +29,12 @@ const limiter = rateLimit({
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.use((req, res, next) => {
-  req.user = {
-    _id: '64b1a34d0bdf597b4fca7583',
-  };
-  next();
-});
+// app.use((req, res, next) => {
+//   req.user = {
+//     _id: '64b1a34d0bdf597b4fca7583',
+//   };
+//   next();
+// });
 
 app.use(helmet());
 app.use(limiter);
@@ -43,7 +43,7 @@ app.use(cookieParser());
 app.post('/signin', login);
 app.post('/signup', createUser);
 
-// app.use(auth);
+app.use(auth);
 
 app.use(routesUser);
 app.use(routesCard);
