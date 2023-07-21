@@ -1,8 +1,11 @@
+require('dotenv').config();
+
 const express = require('express');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
 
 const routesUser = require('./routes/users');
 const routesCard = require('./routes/cards');
@@ -30,6 +33,7 @@ app.use((req, res, next) => {
 
 app.use(helmet());
 app.use(limiter);
+app.use(cookieParser());
 
 app.use(routesUser);
 app.use(routesCard);
