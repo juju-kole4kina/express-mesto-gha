@@ -72,6 +72,24 @@ const updateUser = (req, res) => {
     });
 };
 
+const getActiveUser = (req, res) => {
+  User.findById(req.user._id)
+    .then((user) => {
+      if (!user) {
+        res.status(NOT_FOUND_STATUS_CODE).send({ message: 'Пользователь с указанным _id не найден' });
+        return;
+      }
+      res.status(OK_STATUS_CODE).send(user);
+    })
+    .catch((err) => {
+      if (err.name === 'CastError') {
+        res.status(BAD_REQUEST_STATUS_CODE).send({ message: 'Переданы некорректные данные при получении пользователя' });
+        return;
+      }
+      res.status(INTERNAL_SERVER_ERROR_STATUS_CODE).send({ message: 'Произошла ошибка на сторроне сервера' });
+    });
+};
+
 const updateAvatar = (req, res) => {
   const { avatar } = req.body;
   User.findByIdAndUpdate(req.user._id, { avatar }, { new: true })
@@ -97,4 +115,5 @@ module.exports = {
   createUser,
   updateUser,
   updateAvatar,
+  getActiveUser
 };

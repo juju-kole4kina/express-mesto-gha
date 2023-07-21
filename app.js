@@ -43,7 +43,7 @@ app.use(cookieParser());
 app.post('/signin', login);
 app.post('/signup', createUser);
 
-app.use(auth);
+// app.use(auth);
 
 app.use(routesUser);
 app.use(routesCard);
