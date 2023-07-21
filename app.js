@@ -28,15 +28,15 @@ app.use((req, res, next) => {
   next();
 });
 
+app.use(helmet());
+app.use(limiter);
+
 app.use(routesUser);
 app.use(routesCard);
 
 app.use((req, res) => {
   res.status(404).send({ message: 'Данного адреса не существует' });
 });
-
-app.use(helmet());
-app.use(limiter);
 
 mongoose.connect('mongodb://localhost:27017/mestodb', {});
 
