@@ -10,6 +10,8 @@ const cookieParser = require('cookie-parser');
 const routesUser = require('./routes/users');
 const routesCard = require('./routes/cards');
 
+const { NOT_FOUND_STATUS_CODE } = require('./utils/constants');
+
 const { login } = require('./controllers/login');
 const { createUser } = require('./controllers/users');
 
@@ -49,7 +51,15 @@ app.use(routesUser);
 app.use(routesCard);
 
 app.use((req, res) => {
-  res.status(404).send({ message: 'Данного адреса не существует' });
+  res.status(NOT_FOUND_STATUS_CODE).send({ message: 'Данного адреса не существует' });
+});
+
+app.use((err, req, res, next) => {
+  res.status(err.statusCode).send({
+    message: err.statusCode === 500
+      ? 'На сервере произошла ошибка'
+      : err.message,
+  });
 });
 
 mongoose.connect('mongodb://localhost:27017/mestodb', {});
