@@ -8,9 +8,10 @@ const auth = (req, res, next) => {
   const { authorization } = req.headers;
 
   if (!authorization || !authorization.startsWith('Bearer ')) {
-    return res
+    res
       .status(UNAUTHORIZATION_STATUS_CODE)
       .send({ message: 'Необходима авторизация' });
+    return;
   }
 
   const token = authorization.replace('Bearer ', '');
@@ -19,9 +20,10 @@ const auth = (req, res, next) => {
   try {
     payload = jwt.verify(token, JWT_SECRET);
   } catch (err) {
-    return res
+    res
       .status(UNAUTHORIZATION_STATUS_CODE)
       .send({ message: 'Необходима авторизация' });
+    return;
   }
 
   req.user = payload;
