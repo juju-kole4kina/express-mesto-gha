@@ -10,7 +10,7 @@ const auth = (req, res, next) => {
   if (!jwt) {
     res
       .status(UNAUTHORIZATION_STATUS_CODE)
-      .send({ message: 'Необходима авторизация' });
+      .send({ message: 'Куки не найден' });
     return;
   }
 
