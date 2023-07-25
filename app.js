@@ -1,5 +1,3 @@
-// require('dotenv').config();
-
 const express = require('express');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
@@ -9,6 +7,7 @@ const cookieParser = require('cookie-parser');
 
 const routesUser = require('./routes/users');
 const routesCard = require('./routes/cards');
+const routesAuth = require('./routes/auth');
 
 const { NOT_FOUND_STATUS_CODE } = require('./utils/constants');
 
@@ -31,21 +30,13 @@ const limiter = rateLimit({
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// app.use((req, res, next) => {
-//   req.user = {
-//     _id: '64b1a34d0bdf597b4fca7583',
-//   };
-//   next();
-// });
-
 mongoose.connect('mongodb://localhost:27017/mestodb', {});
 
 app.use(helmet());
 app.use(limiter);
 app.use(cookieParser());
 
-app.post('/signin', login);
-app.post('/signup', createUser);
+app.use(routesAuth);
 
 app.use(auth);
 
@@ -55,11 +46,6 @@ app.use(routesCard);
 app.use((req, res) => {
   res.status(NOT_FOUND_STATUS_CODE).send({ message: 'Данного адреса не существует' });
 });
-
-// app.use((err, req, res, next) => {
-//   res.status(err.statusCode).send({
-//     message: err.statusCode === 500 ? 'На сервере произошла ошибка' : err.message});
-// });
 
 app.use((err, req, res, next) => {
   const { statusCode = 500, message } = err;
