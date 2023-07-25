@@ -6,9 +6,9 @@ const { CREATE_STATUS_CODE } = require('../utils/constants');
 const NotFoundError = require('../errors/not-found-err');
 const BadRequesError = require('../errors/bad-request-err');
 const ConflictError = require('../errors/conflict-err');
-const ForbiddenError = require('../errors/forbiddenError');
-const InternalServerError = require('../errors/internal-server-err');
-const UnauthorizationError = require('../errors/unauthorization-err');
+// const ForbiddenError = require('../errors/forbiddenError');
+// const InternalServerError = require('../errors/internal-server-err');
+// const UnauthorizationError = require('../errors/unauthorization-err');
 
 const getUsers = (req, res, next) => {
   User.find({})
@@ -28,10 +28,10 @@ const getUserId = (req, res, next) => {
       res.send(user);
     })
     .catch((err) => {
-      if (err.name === 'CastError') {
-        next(new BadRequesError('Переданы некорректные данные при получении пользователя'));
-        return;
-      }
+      // if (err.name === 'CastError') {
+      //   next(new BadRequesError('Переданы некорректные данные при получении пользователя'));
+      //   return;
+      // }
       next(err);
     });
 };
@@ -86,7 +86,7 @@ const getActiveUser = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        next(new BadRequesError('Переданы некорректные данные при получении пользователя'));
+        next(new BadRequesError('Переданы неgggкорректные данные при получении пользователя'));
         return;
       }
       next(err);

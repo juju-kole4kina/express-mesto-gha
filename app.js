@@ -1,4 +1,4 @@
-require('dotenv').config();
+// require('dotenv').config();
 
 const express = require('express');
 const helmet = require('helmet');
@@ -38,6 +38,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 //   next();
 // });
 
+mongoose.connect('mongodb://localhost:27017/mestodb', {});
+
 app.use(helmet());
 app.use(limiter);
 app.use(cookieParser());
@@ -54,15 +56,20 @@ app.use((req, res) => {
   res.status(NOT_FOUND_STATUS_CODE).send({ message: 'Данного адреса не существует' });
 });
 
+// app.use((err, req, res, next) => {
+//   res.status(err.statusCode).send({
+//     message: err.statusCode === 500 ? 'На сервере произошла ошибка' : err.message});
+// });
+
 app.use((err, req, res, next) => {
-  res.status(err.statusCode).send({
-    message: err.statusCode === 500
+  const { statusCode = 500, message } = err;
+
+  res.status(statusCode).send({
+    message: statusCode === 500
       ? 'На сервере произошла ошибка'
-      : err.message,
+      : message,
   });
 });
-
-mongoose.connect('mongodb://localhost:27017/mestodb', {});
 
 app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`);

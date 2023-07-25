@@ -2,10 +2,10 @@ const Card = require('../models/card');
 
 const NotFoundError = require('../errors/not-found-err');
 const BadRequesError = require('../errors/bad-request-err');
-const ConflictError = require('../errors/conflict-err');
+// const ConflictError = require('../errors/conflict-err');
 const ForbiddenError = require('../errors/forbiddenError');
-const InternalServerError = require('../errors/internal-server-err');
-const UnauthorizationError = require('../errors/unauthorization-err');
+// const InternalServerError = require('../errors/internal-server-err');
+// const UnauthorizationError = require('../errors/unauthorization-err');
 
 const { CREATE_STATUS_CODE } = require('../utils/constants');
 
@@ -36,6 +36,9 @@ const deleteCard = (req, res, next) => {
     .then((card) => {
       if (!card) {
         throw new NotFoundError('Карточка с указанным _id не найдена');
+      }
+      if (req.user._id !== card.owner.toString()) {
+        throw new ForbiddenError('У Вас нет прав для удаления этой карточки');
       }
       res.send(card);
     })
