@@ -4,7 +4,7 @@ const rateLimit = require('express-rate-limit');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
-const { celebrate, Joi } = require('celebrate');
+const { celebrate, Joi, errors } = require('celebrate');
 
 const routesUser = require('./routes/users');
 const routesCard = require('./routes/cards');
@@ -38,7 +38,7 @@ app.use(cookieParser());
 
 app.post('/signin', celebrate({
   body: Joi.object().keys({
-    email: Joi.string().required(true).pattern(/^(([0-9A-Za-z]{1}[-0-9A-z.]{1,}[0-9A-Za-z]{1})@([-A-Za-z]{1,}.){1,2}[-A-Za-z]{2,})$/),
+    email: Joi.string().required(true).email(),
     password: Joi.string().required(true).min(8),
   }),
 }), login);
@@ -48,7 +48,7 @@ app.post('/signup', celebrate({
     name: Joi.string().min(2).max(30),
     about: Joi.string().min(8).max(30),
     avatar: Joi.string().pattern(/^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w.-]+)+[\w\-._~:/?#[\]@!$&'()*+,;=.]+$/),
-    email: Joi.string().required(true).pattern(/^(([0-9A-Za-z]{1}[-0-9A-z.]{1,}[0-9A-Za-z]{1})@([-A-Za-z]{1,}.){1,2}[-A-Za-z]{2,})$/),
+    email: Joi.string().required(true).email(),
     password: Joi.string().required(true).min(8),
   }),
 }), createUser);
@@ -61,6 +61,8 @@ app.use(routesCard);
 app.use((req, res) => {
   res.status(NOT_FOUND_STATUS_CODE).send({ message: 'Данного адреса не существует' });
 });
+
+app.use(errors());
 
 app.use((err, req, res, next) => {
   const { statusCode = 500, message } = err;
