@@ -11,12 +11,12 @@ const login = (req, res) => {
   User.findUserByCredentials(email, password)
     .then((user) => {
       const token = jwt.sign({ _id: user._id }, JWT_SECRET, { expiresIn: '7d' });
-      const bearerToken = `Bearer ${token}`;
-      res.cookie('jwt', bearerToken, {
+
+      res.cookie('jwt', token, {
         maxAge: 3600000 * 24 * 7,
         httpOnly: true,
         sameSite: true,
-      }).send({ bearerToken });
+      }).send({ token });
     })
     .catch(() => {
       res.status(UNAUTHORIZATION_STATUS_CODE).send({ message: 'Переданны некорректные данные' });

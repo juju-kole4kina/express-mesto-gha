@@ -5,7 +5,7 @@ const JWT_SECRET = '686b888065dc0105ef5799cae9ea58bae758dec68a657e4f3ff2d673a204
 const { UNAUTHORIZATION_STATUS_CODE } = require('../utils/constants');
 
 const auth = (req, res, next) => {
-  const { authorization } = req.headers;
+  const { authorization } = req.cookies;
 
   if (!authorization) {
     res
@@ -14,13 +14,7 @@ const auth = (req, res, next) => {
     return;
   }
 
-  if (!authorization.startWith('Bearer ')) {
-    res.status(UNAUTHORIZATION_STATUS_CODE)
-      .send({ message: 'Другое сообщение' });
-    return;
-  }
-
-  const token = authorization.replace('Bearer ', '');
+  const token = authorization;
   let payload;
 
   try {
