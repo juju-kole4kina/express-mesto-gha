@@ -4,10 +4,10 @@ const rateLimit = require('express-rate-limit');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
+const { celebrate, Joi } = require('celebrate');
 
 const routesUser = require('./routes/users');
 const routesCard = require('./routes/cards');
-const routesAuth = require('./routes/auth');
 
 const { NOT_FOUND_STATUS_CODE } = require('./utils/constants');
 
@@ -36,7 +36,19 @@ app.use(helmet());
 app.use(limiter);
 app.use(cookieParser());
 
-app.use(routesAuth);
+app.post('/signin', celebrate({
+  body: Joi.object().keys({
+    email: Joi.string().required(true).pattern(/^(([0-9A-Za-z]{1}[-0-9A-z.]{1,}[0-9A-Za-z]{1})@([-A-Za-z]{1,}.){1,2}[-A-Za-z]{2,})$/),
+    password: Joi.string().required(true).min(8),
+  }),
+}), login);
+
+app.post('/signup', celebrate({
+  body: Joi.object().keys({
+    email: Joi.string().required(true).pattern(/^(([0-9A-Za-z]{1}[-0-9A-z.]{1,}[0-9A-Za-z]{1})@([-A-Za-z]{1,}.){1,2}[-A-Za-z]{2,})$/),
+    password: Joi.string().required(true).min(8),
+  }),
+}), createUser);
 
 app.use(auth);
 
@@ -55,6 +67,7 @@ app.use((err, req, res, next) => {
       ? 'На сервере произошла ошибка'
       : message,
   });
+  next();
 });
 
 app.listen(PORT, () => {
