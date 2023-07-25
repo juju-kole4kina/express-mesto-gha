@@ -1,24 +1,24 @@
-const jwt = require('jsonwebtoken');
+const jsonwebtoken = require('jsonwebtoken');
 
 // const { NODE_ENV, JWT_SECRET } = process.env;
 const JWT_SECRET = '686b888065dc0105ef5799cae9ea58bae758dec68a657e4f3ff2d673a2048cdd';
 const { UNAUTHORIZATION_STATUS_CODE } = require('../utils/constants');
 
 const auth = (req, res, next) => {
-  const { authorization } = req.cookies;
+  const { jwt } = req.cookies;
 
-  if (!authorization) {
+  if (!jwt) {
     res
       .status(UNAUTHORIZATION_STATUS_CODE)
       .send({ message: 'Необходима авторизация' });
     return;
   }
 
-  const token = authorization;
+  const token = jwt;
   let payload;
 
   try {
-    payload = jwt.verify(token, JWT_SECRET);
+    payload = jsonwebtoken.verify(token, JWT_SECRET);
   } catch (err) {
     res
       .status(UNAUTHORIZATION_STATUS_CODE)
