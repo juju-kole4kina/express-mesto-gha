@@ -7,10 +7,16 @@ const { UNAUTHORIZATION_STATUS_CODE } = require('../utils/constants');
 const auth = (req, res, next) => {
   const { authorization } = req.headers;
 
-  if (!authorization || !authorization.startsWith('Bearer ')) {
+  if (!authorization) {
     res
       .status(UNAUTHORIZATION_STATUS_CODE)
       .send({ message: 'Необходима авторизация' });
+    return;
+  }
+
+  if (!authorization.startWith('Bearer ')) {
+    res.status(UNAUTHORIZATION_STATUS_CODE)
+      .send({ message: 'Другое сообщение' });
     return;
   }
 
