@@ -38,7 +38,7 @@ app.use(cookieParser());
 
 app.post('/signin', celebrate({
   body: Joi.object().keys({
-    email: Joi.string().required(true).email(),
+    email: Joi.string().required(true).email({ minDomainSegments: 2, tlds: { allow: true } }),
     password: Joi.string().required(true).min(8),
   }),
 }), login);
@@ -46,9 +46,9 @@ app.post('/signin', celebrate({
 app.post('/signup', celebrate({
   body: Joi.object().keys({
     name: Joi.string().min(2).max(30),
-    about: Joi.string().min(8).max(30),
-    avatar: Joi.string().pattern(/^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w.-]+)+[\w\-._~:/?#[\]@!$&'()*+,;=.]+$/),
-    email: Joi.string().required(true).email(),
+    about: Joi.string().min(2).max(30),
+    avatar: Joi.string().regex(/https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)/),
+    email: Joi.string().required(true).email({ minDomainSegments: 2, tlds: { allow: true } }),
     password: Joi.string().required(true).min(8),
   }),
 }), createUser);
